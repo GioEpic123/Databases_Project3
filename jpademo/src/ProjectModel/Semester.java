@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 @Entity(name = "SEMESTERS")
 public class Semester {
+    @Column(length = 8)
     private int title;
     private LocalDate startDate;
 

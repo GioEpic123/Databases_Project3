@@ -6,7 +6,9 @@ import jakarta.persistence.*;
 
 @Entity(name = "DEPARTMENTS")
 public class Department {
+    @Column(length = 128)
     private String name;
+    @Column(length = 8)
     private String abbreviation;
 
     // PK

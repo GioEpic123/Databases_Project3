@@ -4,8 +4,12 @@ import jakarta.persistence.*;
 import java.util.List;
 
 @Entity(name = "COURSES")
+
 public class Course {
+
+    @Column(length = 8)
     private String number;
+    @Column(length = 64)
     private String title;
     private int units;
 
