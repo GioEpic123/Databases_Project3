@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 
 @Entity(name = "DEPARTMENTS")
 public class Department {
+    //Attributes required
     @Column(length = 128)
     private String name;
     @Column(length = 8)
@@ -13,6 +14,7 @@ public class Department {
 
     // PK
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DEPARTMENT_ID")
     private int deptID;
 
@@ -21,9 +23,10 @@ public class Department {
     private List<Course> courses;
 
 
+    //Default Constructor
     public Department() {
     }
-
+    //Overloaded Constructor
     public Department(String name, String abbreviation, int deptID, List<Course> courses) {
         this.name = name;
         this.abbreviation = abbreviation;

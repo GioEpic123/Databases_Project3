@@ -2,34 +2,45 @@ package ProjectModel;
 
 import jakarta.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity(name = "COURSES")
-
 public class Course {
 
+    //Attributes required
     @Column(length = 8)
     private String number;
     @Column(length = 64)
     private String title;
-    private int units;
 
+    //Using byte since units can be 
+    //4 at most. byte is the smallest
+    //data type.
+    private byte units;
+
+    //ID of the course
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "COURSE_ID")
     private int courseID;
 
     // The Course table is the one with the foreign key,
     // so it gets the JoinColumn attribute.
+    //Relation to Department
     @ManyToOne
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department department;
 
-    @OneToMany(mappedBy = "parentCourse")
-    private List<Prerequisite> preReqs;
+    //Relation to prerequisite
+    @OneToMany(mappedBy = "followupCourse")
+    private Set<Prerequisite> prerequisites;
 
+
+    //Default Constructor
     public Course() {
     }
-
-    public Course(String number, String title, int units, int courseID, Department department) {
+    //Overloaded constructor
+    public Course(String number, String title, byte units, int courseID, Department department) {
         this.number = number;
         this.title = title;
         this.units = units;
@@ -53,11 +64,11 @@ public class Course {
         this.title = title;
     }
 
-    public int getUnits() {
+    public byte getUnits() {
         return this.units;
     }
 
-    public void setUnits(int units) {
+    public void setUnits(byte units) {
         this.units = units;
     }
 

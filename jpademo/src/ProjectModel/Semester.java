@@ -6,13 +6,19 @@ import jakarta.persistence.*;
 
 @Entity(name = "SEMESTERS")
 public class Semester {
-    @Column(length = 8)
+    //Attributes needed
+    @Column(length = 16)
     private int title;
     private LocalDate startDate;
 
+    //ObjectID
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "SEMESTER_ID")
     private int semesterId;
+
+    //One to many relation to Section
+    //
 
     @OneToMany(mappedBy = "semester")
     private List<Section> sections;
