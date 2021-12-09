@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Entity(name = "COURSES")
 @Table(uniqueConstraints={
-    @UniqueConstraint(columnNames = {"number", "department"})
+    @UniqueConstraint(columnNames = {"number", "department_ID"})
 }) 
 public class Course {
 
@@ -39,7 +39,7 @@ public class Course {
     private Department department;
 
     //Relation to prerequisite
-    @OneToMany(mappedBy = "followupCourse")
+    @OneToMany(mappedBy = "followUpCourse")
     private Set<Prerequisite> prerequisites;
 
 
