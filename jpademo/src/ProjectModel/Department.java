@@ -1,14 +1,16 @@
 package ProjectModel;
 
 import java.util.List;
-
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity(name = "DEPARTMENTS")
 public class Department {
     //Attributes required
+    @NotNull
     @Column(length = 128)
     private String name;
+    @NotNull
     @Column(length = 8)
     private String abbreviation;
 
@@ -27,11 +29,9 @@ public class Department {
     public Department() {
     }
     //Overloaded Constructor
-    public Department(String name, String abbreviation, int deptID, List<Course> courses) {
+    public Department(String name, String abbreviation) {
         this.name = name;
         this.abbreviation = abbreviation;
-        this.deptID = deptID;
-        this.courses = courses;
     }
 
     public String getName() {
@@ -54,10 +54,6 @@ public class Department {
         return this.deptID;
     }
 
-    public void setDeptID(int deptID) {
-        this.deptID = deptID;
-    }
-
     public List<Course> getCourses() {
         return this.courses;
     }
@@ -70,7 +66,7 @@ public class Department {
     public String toString() {
         return
             getName() +
-            " Department, (" + getAbbreviation() + ") ID: " +
+            " Department, '" + getAbbreviation() + "' ID: " +
             getDeptID();
     }
 

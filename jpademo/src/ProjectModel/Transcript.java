@@ -1,7 +1,15 @@
 package ProjectModel;
 import jakarta.persistence.*;
 
+// Class for PK
+class TranscriptID{
+    int student;
+    int section;
+    String gradeEarned;
+}
+
 @Entity(name = "TRANSCRIPTS")
+@IdClass(TranscriptID.class)
 public class Transcript {
 
     @Id
@@ -18,6 +26,37 @@ public class Transcript {
     @Column(length = 2)
     private String gradeEarned;
     
+    public Transcript(){
+    }
+
+
+    public Transcript(Student student, Section section, String gradeEarned) {
+        this.student = student;
+        this.section = section;
+        this.gradeEarned = gradeEarned;
+    }
+
+    public Student getStudent() {
+        return this.student;
+    }
+
+    public Section getSection() {
+        return this.section;
+    }
+
+    public String getGradeEarned() {
+        return this.gradeEarned;
+    }
+
+    @Override
+    public String toString() {
+        return "Transcript: \n" +
+            "Student " + getStudent().getName()
+            + ", ID " + getStudent().getStudentID()
+            + " earned grade of " + getGradeEarned()
+            + " in Section " + getSection().getSectionNumber()
+            + " of " + getSection().getClass().toString();
+    }
 
 
 }

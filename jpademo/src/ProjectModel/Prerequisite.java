@@ -1,32 +1,39 @@
 package ProjectModel;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+
+// Class for PK
+class PrerequisiteID{
+    int followUpCourse; 
+    int prereqCourse;
+}
 
 @Entity(name = "PREREQUISITES")
+@IdClass(PrerequisiteID.class)
 public class Prerequisite{
+    
+    @NotNull
     private char minimumGrade;
-
-    @Id
-    @Column(name = "PREREQ_ID")
-    private int prereqID;
 
     // Since association is recursive,
     // we need two Course ID FKs
+    @Id
     @ManyToOne
-    @JoinColumn(name = "COURSE_ID")
-    private Course parentCourse; 
+    @JoinColumn(name = "FOLLOWUP_ID")
+    private Course followUpCourse; 
+
     //Tried specifiying another Many to one with join column here, and Eclipse Persistance HATED that.
     //Leaving it blank for now
+    @Id
     private Course prereqCourse;
-
 
     public Prerequisite() {
     }
 
-    public Prerequisite(char minimumGrade, int prereqID, Course parentCourse, Course prereqCourse) {
+    public Prerequisite(char minimumGrade, Course followUpCourse, Course prereqCourse) {
         this.minimumGrade = minimumGrade;
-        this.prereqID = prereqID;
-        this.parentCourse = parentCourse;
+        this.followUpCourse = followUpCourse;
         this.prereqCourse = prereqCourse;
     }
 
@@ -38,35 +45,19 @@ public class Prerequisite{
         this.minimumGrade = minimumGrade;
     }
 
-    public int getPrereqID() {
-        return this.prereqID;
-    }
-
-    public void setPrereqID(int prereqID) {
-        this.prereqID = prereqID;
-    }
-
-    public Course getParentCourse() {
-        return this.parentCourse;
-    }
-
-    public void setParentCourse(Course parentCourse) {
-        this.parentCourse = parentCourse;
+    public Course getfollowUpCourse() {
+        return this.followUpCourse;
     }
 
     public Course getPrereqCourse() {
         return this.prereqCourse;
-    }
-
-    public void setPrereqCourse(Course prereqCourse) {
-        this.prereqCourse = prereqCourse;
     }
     
     @Override
     public String toString() {
         return getPrereqCourse() + " with a grade of " +
             getMinimumGrade() + " or higher to enroll in " +
-            getParentCourse();
+            getfollowUpCourse();
     }
 
 }

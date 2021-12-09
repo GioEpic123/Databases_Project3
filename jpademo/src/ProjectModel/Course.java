@@ -1,21 +1,28 @@
 package ProjectModel;
 
 import jakarta.persistence.*;
-import java.util.List;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.Set;
 
 @Entity(name = "COURSES")
+@Table(uniqueConstraints={
+    @UniqueConstraint(columnNames = {"number", "department"})
+}) 
 public class Course {
 
     //Attributes required
+    @NotNull
     @Column(length = 8)
     private String number;
+    @NotNull
     @Column(length = 64)
     private String title;
 
     //Using byte since units can be 
     //4 at most. byte is the smallest
     //data type.
+    @NotNull
     private byte units;
 
     //ID of the course
@@ -40,12 +47,15 @@ public class Course {
     public Course() {
     }
     //Overloaded constructor
-    public Course(String number, String title, byte units, int courseID, Department department) {
+    public Course(String number, String title, byte units,Department department) {
         this.number = number;
         this.title = title;
         this.units = units;
-        this.courseID = courseID;
         this.department = department;
+    }
+
+    public int getCourseID() {
+        return courseID;
     }
 
     public String getNumber() {
@@ -70,14 +80,6 @@ public class Course {
 
     public void setUnits(byte units) {
         this.units = units;
-    }
-
-    public int getCourseID() {
-        return this.courseID;
-    }
-
-    public void setCourseID(int courseID) {
-        this.courseID = courseID;
     }
 
     public Department getDepartment() {

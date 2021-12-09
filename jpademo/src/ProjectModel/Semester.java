@@ -18,8 +18,6 @@ public class Semester {
     private int semesterId;
 
     //One to many relation to Section
-    //
-
     @OneToMany(mappedBy = "semester")
     private List<Section> sections;
 
