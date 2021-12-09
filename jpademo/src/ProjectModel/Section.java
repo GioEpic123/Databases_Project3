@@ -58,6 +58,20 @@ public class Section {
     @OneToMany(mappedBy = "section")
     private Set<Transcript> transcripts;
 
+    //Bi-Directional adders
+    public void addSemester(Semester s) { 
+        s.addSection(this); 
+    }
+    public void addStudent(Student s) { 
+        this.pushStudent(s); 
+        s.pushSection(this); 
+    }
+
+    // Helper for addSection
+    public void pushStudent(Student s){
+        this.students.add(s);
+    }
+
     public Section() {
     }
 

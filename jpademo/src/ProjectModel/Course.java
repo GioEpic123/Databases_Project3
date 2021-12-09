@@ -42,6 +42,10 @@ public class Course {
     @OneToMany(mappedBy = "followUpCourse")
     private Set<Prerequisite> prerequisites;
 
+    //Bi-Directional adder
+    public void addDepartment(Department d) { 
+        d.addCourse(this); 
+    }
 
     //Default Constructor
     public Course() {

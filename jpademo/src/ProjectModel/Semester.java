@@ -3,12 +3,16 @@ package ProjectModel;
 import java.time.LocalDate;
 import java.util.List;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 
 @Entity(name = "SEMESTERS")
 public class Semester {
     //Attributes needed
+    @NotNull
     @Column(length = 16)
     private int title;
+
+    @NotNull
     private LocalDate startDate;
 
     //ObjectID
@@ -21,15 +25,18 @@ public class Semester {
     @OneToMany(mappedBy = "semester")
     private List<Section> sections;
 
+    //Bi-Directional adder
+    public void addSection(Section s) { 
+        this.sections.add(s); 
+        s.setSemester(this); 
+    }
 
     public Semester() {
     }
 
-    public Semester(int title, LocalDate startDate, int semesterId, List<Section> sections) {
+    public Semester(int title, LocalDate startDate) {
         this.title = title;
         this.startDate = startDate;
-        this.semesterId = semesterId;
-        this.sections = sections;
     }
 
     public int getTitle() {
@@ -52,10 +59,6 @@ public class Semester {
         return this.semesterId;
     }
 
-    public void setSemesterId(int semesterId) {
-        this.semesterId = semesterId;
-    }
-
     public List<Section> getSections() {
         return this.sections;
     }
@@ -63,6 +66,8 @@ public class Semester {
     public void setSections(List<Section> sections) {
         this.sections = sections;
     }
+
+    
 
     @Override
     public String toString() {

@@ -29,6 +29,17 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private Set<Transcript> transcripts;
 
+    //Bi-Directional adder
+    public void addSection(Section s) { 
+        this.pushSection(s); 
+        s.pushStudent(this); 
+    }
+
+    // Helper for addSection
+    public void pushSection(Section s){
+        this.sections.add(s);
+    }
+
     public Student() {
     }
 

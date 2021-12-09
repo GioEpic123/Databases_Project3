@@ -24,6 +24,11 @@ public class Department {
     @OneToMany(mappedBy = "department")
     private List<Course> courses;
 
+    //Bi-Directional adder
+    public void addCourse(Course c) { 
+        this.courses.add(c); 
+        c.setDepartment(this); 
+    }
 
     //Default Constructor
     public Department() {
