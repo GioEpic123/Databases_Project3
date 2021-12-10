@@ -121,7 +121,7 @@ public class Student {
         
         // The student has already received a "C" or better in the course.
         for(Transcript t: transcripts){
-            if(t.getSection() == s){
+            if(t.getSection().getCourse() == s.getCourse()){
                 String grade = t.getGradeEarned();
                 if(grade == "C" || grade == "B" || grade == "C"){
                     return RegistrationResult.ALREADY_PASSED;
@@ -174,7 +174,7 @@ public class Student {
     }
 
     public Set<Section> getSections() {
-        return this.sections;
+        return sections;
     }
 
     public void setSections(Set<Section> sections) {

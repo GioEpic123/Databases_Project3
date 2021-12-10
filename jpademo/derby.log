@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Fri Dec 10 09:04:04 PST 2021:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-017d-a54d-44a0-00000f02b920 
+Fri Dec 10 10:19:36 PST 2021:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-017d-a592-6dc7-00000f0d07f0 
 on database directory /Users/giovanniquevedo/Desktop/Derby with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@277050dc 
 Loaded from file:/Users/giovanniquevedo/Desktop/Proj3/GitRepo/jpademo/lib/derby.jar
 java.vendor=AdoptOpenJDK
