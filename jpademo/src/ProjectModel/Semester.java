@@ -8,9 +8,8 @@ import jakarta.validation.constraints.NotNull;
 @Entity(name = "SEMESTERS")
 public class Semester {
     //Attributes needed
-    @NotNull
-    @Column(length = 16)
-    private int title;
+    @Column(length = 16, nullable = false)
+    private String title;
 
     @NotNull
     private LocalDate startDate;
@@ -34,16 +33,16 @@ public class Semester {
     public Semester() {
     }
 
-    public Semester(int title, LocalDate startDate) {
+    public Semester(String title, LocalDate startDate) {
         this.title = title;
         this.startDate = startDate;
     }
 
-    public int getTitle() {
+    public String getTitle() {
         return this.title;
     }
 
-    public void setTitle(int title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 

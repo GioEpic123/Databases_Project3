@@ -54,9 +54,9 @@ public class Section {
     )
     private Set<Student> students;
 
-    //Many to Many for Transcript
-    @OneToMany(mappedBy = "section")
-    private Set<Transcript> transcripts;
+    // //Many to Many for Transcript -- Uni-Directional, so this is not needed
+    // @OneToMany(mappedBy = "section")
+    // private Set<Transcript> transcripts;
 
     //Bi-Directional adders
     public void addSemester(Semester s) { 
@@ -132,14 +132,6 @@ public class Section {
 
     public void setStudents(Set<Student> students) {
         this.students = students;
-    }
-
-    public Set<Transcript> getTranscripts() {
-        return this.transcripts;
-    }
-
-    public void setTranscripts(Set<Transcript> transcripts) {
-        this.transcripts = transcripts;
     }
 
     @Override
