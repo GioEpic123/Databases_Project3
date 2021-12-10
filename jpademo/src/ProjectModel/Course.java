@@ -86,6 +86,10 @@ public class Course {
         this.units = units;
     }
 
+    public Set<Prerequisite> getPrerequisites(){
+        return prerequisites;
+    }
+
     public Department getDepartment() {
         return this.department;
     }
