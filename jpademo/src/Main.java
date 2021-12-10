@@ -1,8 +1,10 @@
+import java.util.List;
 import java.util.Scanner;
 import java.time.*;
 import jakarta.persistence.*;
 
 import ProjectModel.*;
+import ProjectModel.Student.RegistrationResult;
 
 public class Main{
     public static void main(String[] args) {
@@ -173,7 +175,7 @@ public class Main{
                 Student amos = new Student(555555555,"Amos Burton");
 
                 // Adding naomi's currently enrolled section
-                naomi.addSection(d);
+                // naomi.getSections().add(d);
 
                 em.persist(naomi);
                 em.persist(james);
@@ -206,8 +208,8 @@ public class Main{
                 amos.getTranscripts().add(amosA);
                 amos.getTranscripts().add(amosB);
                 amos.getTranscripts().add(amosC);
+                
                 em.persist(naomiA);
-
                 em.persist(naomiA);
                 em.persist(naomiB);
                 em.persist(naomiC);
@@ -252,10 +254,133 @@ public class Main{
             else if(menuOption == 3){
                 
                 //REGISTER FOR CLASS STUFF
+                // Storing the desired semester to register here, will be obtained by either menu or lookup methods
+                Semester desiredSemester = null;
+
+                Scanner regInput = new Scanner(System.in);
+                var semesters = em.createQuery("select s from SEMESTERS s", Semester.class).getResultList();
+
+                System.out.println(" Chose a semester to get started ");
+                System.out.println(" Type (M) for Menu Selection, or (L) to lookup Semester by name. ");
+                String regSel = regInput.nextLine();
+                if(regSel.equalsIgnoreCase("M")){
+                    // Menu Selection Path
+                    System.out.println(" Enter a number to choose a semester: ");
+                    
+                    int count = 0;
+                    for(Semester s: semesters){
+                        System.out.println(" (" + count++ + ") for " + s.toString());
+                    }
+                    System.out.print(" > ");
+                    var semSel = regInput.nextInt();
+                    // Chose the semester they chose and work with it. If they chose value >= 0, use 0 instead
+                    
+                    try {
+                        desiredSemester = semesters.get((semSel > 0 ? semSel- 1 : 0));
+                    } catch (Exception e) {
+                        System.out.println(" Invalid selection. ");
+                        //TODO: handle exception better
+                    }
+
+                    
+                }else if(regSel.equalsIgnoreCase("L")){
+                    // User input Path
+                    System.out.println(" Avaliable Semesters: ");
+                    
+                    for(Semester s: semesters){
+                        System.out.println(s.toString());
+                        System.out.println("Semester Title: " + s.getTitle());
+                        System.out.println();
+                    }
+                    System.out.println(" Lookup a semester by it's title: ");
+                    System.out.print(" > ");
+                    var semSel = regInput.nextLine();
+
+                    var namedSemester = em.createQuery("SELECT s FROM SEMESTERS s where " + 
+                    "s.title = ?1", Semester.class);
+                    namedSemester.setParameter(1, semSel);
+                    
+                    try {
+                        Semester requested = namedSemester.getSingleResult();
+                        System.out.println("Semester " + requested + " has been found");
+            
+                        desiredSemester = requested;
+                    }
+                    catch (NoResultException ex) {
+                        System.out.println("Semester has not been found");
+                        //TODO: handle exception better
+                    }
+                }   
                 
-                System.out.println("To-Do");
-        
-        
+                // At this point Semester has been chosen, saved in desired Semester
+                if(desiredSemester != null){
+
+                    
+                    System.out.println("Enter the name of the student: ");
+                    System.out.print(" > ");
+                    String name = regInput.nextLine();
+            
+                    var namedStudent = em.createQuery("SELECT s FROM STUDENTS s where " + 
+                    "s.name = ?1", Student.class);
+                    namedStudent.setParameter(1, name);
+                    
+                    try {
+                        Student requested = namedStudent.getSingleResult();
+                        System.out.println("Student: " + requested + " has been found");
+            
+                        // User now needs to enter name of course section
+                        System.out.println("Enter name of the desired section in ABREV_COURSE-SEC format. Ex: 'CECS 277-05' is valid input. ");
+                        System.out.print(" > ");
+                        String rawSecInput = regInput.nextLine();
+                        System.out.println("You've entered: " + rawSecInput);
+                        // Parse string before passing it to query. Assuming they followed the space convention
+                        try{
+                            String[] splitInput = rawSecInput.split(" ");
+                            String abbrev = splitInput[0];
+                            String courseRaw = splitInput[1];
+                            String[] splitCourse = courseRaw.split("-");
+                            int courseNum = Integer.parseInt(splitCourse[0]);
+                            int secNum = Integer.parseInt(splitCourse[1]);
+
+                            // Assuming all above operations were completed sucessfully, input was valid.
+                            var namedSection = em.createQuery("SELECT s FROM SECTIONS s where " + 
+                            "s.sectionNumber = ?1 AND" + " s.course.number = ?2 AND " + "s.course.department.abbreviation = ?3", Section.class);
+                            namedSection.setParameter(1, secNum);
+                            namedSection.setParameter(2, courseNum);
+                            namedSection.setParameter(3, abbrev);
+
+                            try {
+                                
+                                Section desiredSection = namedSection.getSingleResult();
+                                System.out.println(" Section " + desiredSection.toString() + " found!");
+                                System.out.println(" Attempting to reguister " + requested + " in section " + desiredSection.toString());
+                                
+                                em.getTransaction().begin();
+                                RegistrationResult res = requested.registerForSection(desiredSection);
+                                System.out.println(" Registration result: " + res);
+                                em.getTransaction().commit();
+
+                            } catch (Exception e) {
+                                System.out.println(" Section not found with " + rawSecInput + " input may be incorrect. Please try again.");
+                                //TODO: handle exception
+                            }
+                            
+
+
+                        }catch (Exception e){
+                            System.out.println(" Input was invalid");
+                            //TODO: handle exception
+                        }
+                    }
+                    catch (NoResultException ex) {
+                        System.out.println("Student has not been found.");
+                        //TODO: handle exception better
+                    }
+
+                }else{
+                    System.out.println("We're sorry, but it appears your desired Semester could not be found. Please try again.");
+                    //TODO: handle exception better
+                }
             }
 
         }
@@ -264,3 +389,89 @@ public class Main{
         optionInput.close();
     }
 }
+
+/*
+
+Scanner studentInput = new Scanner(System.in);
+                System.out.println("Enter the name of the student: ");
+                String name = studentInput.nextLine();
+        
+                var namedStudent = em.createQuery("SELECT s FROM STUDENTS s where " + 
+                "s.name = ?1", Student.class);
+                namedStudent.setParameter(1, name);
+                
+                try {
+                    Student requested = namedStudent.getSingleResult();
+                    System.out.println("Student: " + requested + " has been found");
+        
+                    for(Transcript t : requested.getTranscripts()){
+                        
+                        System.out.println(t.getSection().getCourse().getDepartment().getAbbreviation() + 
+                        t.getSection().getCourse().getNumber() + " Grade Earned: "+ t.getGradeEarned());
+        
+                    }
+                    System.out.println("GPA: " + requested.getGPA());
+                }
+                catch (NoResultException ex) {
+                    System.out.println("Student has not been found");
+                }
+
+*/
+
+// Accidentally made a menu for section selection as well...whoops
+/*
+
+else if(menuOption == 3){
+                
+                //REGISTER FOR CLASS STUFF
+                // Storing the desired class to register here, will be obtained by either menu or lookup methods
+                Section desiredSection = null;
+
+                Scanner regInput = new Scanner(System.in);
+                System.out.println(" Type (M) for Menu Selection, or (L) to lookup section by name. ");
+                String regSel = regInput.nextLine();
+                if(regSel.equalsIgnoreCase("M")){
+                    // Menu Selection Path
+                    System.out.println("Choose a semester to get started: ");
+                    var semesters = em.createQuery("select m from MUSEUMS m", Semester.class).getResultList();
+                    int count = 0;
+                    for(Semester s: semesters){
+                        System.out.println(" (" + count++ + ") for " + s.toString());
+                    }
+                    System.out.print(" > ");
+                    var semSel = regInput.nextInt();
+                    // Chose the semester they chose and work with it. If they chose value >= 0, use 0 instead
+                    Semester choiceSem = semesters.get((semSel > 0 ? semSel- 1 : 0));
+
+                    try {
+                        List<Section> avaliableSec = choiceSem.getSections();
+                        System.out.println("Chose a section from chosen semester: ");
+                        count = 0;
+                        for(Section s: avaliableSec){
+                            System.out.println(" (" + count++ + ") for " + s.toString());
+                        }
+                        System.out.print(" > ");
+                        var secSel = regInput.nextInt();
+                        // Print out chosen section and save
+                        desiredSection = avaliableSec.get((secSel > 0 ? semSel- 1 : 0));
+                        System.out.println("Chosen Section: " + desiredSection.toString());
+
+                    } catch (Exception e) {
+                        System.out.println("Error: Semester not found. Message: " + e.getLocalizedMessage());
+                        desiredSection = null;
+                    }
+
+                    
+                }else if(regSel.equalsIgnoreCase("L")){
+                    // User Input Path
+                }   
+                
+                // At this point Section has been chosen, saved in desired section
+                if(desiredSection != null){
+
+                }else{
+                    System.out.println("We're sorry, but it appears your desired section could not be found. Please try again.");
+                }
+            }
+
+*/
